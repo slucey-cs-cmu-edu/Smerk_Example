@@ -45,39 +45,18 @@
     [self setupFaceTrackingViews];
     [self calculateTransformations];
     
-    // In portrait mode, need to swap x & y coordinates of the returned boxes
-    if (UIInterfaceOrientationIsPortrait(detector_.outputImageOrientation)) {
-        // Interchange x & y
-        portraitRotationTransform_ = CGAffineTransformMake(0, 1, 1, 0, 0, 0);
-    }
-    else {
-        portraitRotationTransform_ = CGAffineTransformIdentity;
-    }
-
     // Set the block for running face detector
     [detector_ beginDetecting:kFaceFeatures | kMachineAndFaceMetaData
                         codeTypes:@[AVMetadataObjectTypeQRCode]
                withDetectionBlock:^(SMKDetectionOptions detectionType, NSArray *detectedObjects, CGRect clapOrRectZero) {
-                   
-                   if (detectedObjects.count) {
-                       //NSLog(@"Detected objects %@", detectedObjects);
-                   }
-                   
+                   // Check if the kFaceFeatures have been discovered
                    if (detectionType & kFaceFeatures) {
-                       //NSLog(@"detecting kFaceFeatures");
                        [self updateFaceFeatureTrackingViewWithObjects:detectedObjects];
                    }
-                   else if (detectionType | kFaceMetaData) {
-                       //NSLog(@"detecting FaceMetaData");
-                       
-                       //[self updateFaceMetadataTrackingViewWithObjects:detectedObjects];
-                   }
-                
                }];
 
     // Finally start the camera
     [detector_ startCameraCapture];
-
     
 }
 
